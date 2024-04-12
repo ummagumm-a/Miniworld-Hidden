@@ -1,3 +1,4 @@
+import numpy as np
 from gymnasium import spaces, utils
 
 from miniworld.entity import Box, HiddenBox
@@ -44,10 +45,20 @@ class OneRoom(MiniWorldEnv, utils.EzPickle):
 
     """
 
-    def __init__(self, size=10, max_episode_steps=180, hidden_box=False, **kwargs):
+    def __init__(
+        self,
+        goal_pos=None,
+        init_dir=None,
+        size=10,
+        max_episode_steps=180,
+        hidden_box=True,
+        **kwargs
+    ):
         assert size >= 2
         self.size = size
         self.hidden_box = hidden_box
+        self.goal_pos = goal_pos
+        self.init_dir = init_dir
 
         MiniWorldEnv.__init__(self, max_episode_steps=max_episode_steps, **kwargs)
         utils.EzPickle.__init__(
@@ -61,11 +72,15 @@ class OneRoom(MiniWorldEnv, utils.EzPickle):
         self.add_rect_room(min_x=0, max_x=self.size, min_z=0, max_z=self.size)
 
         if self.hidden_box:
-            self.box = self.place_entity(HiddenBox(color="red"))
+            self.box = self.place_entity(
+                HiddenBox(color="red"), pos=self.goal_pos, dir=self.init_dir
+            )
         else:
-            self.box = self.place_entity(Box(color="red"))
+            self.box = self.place_entity(
+                Box(color="red"), pos=self.goal_pos, dir=self.init_dir
+            )
 
-        self.place_agent()
+        self.place_agent(pos=np.array([self.size / 2, 0, self.size / 2]), dir=0)
 
     def step(self, action):
         obs, reward, termination, truncation, info = super().step(action)
