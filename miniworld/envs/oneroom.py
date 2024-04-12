@@ -1,6 +1,6 @@
 from gymnasium import spaces, utils
 
-from miniworld.entity import Box
+from miniworld.entity import Box, HiddenBox
 from miniworld.miniworld import MiniWorldEnv
 from miniworld.params import DEFAULT_PARAMS
 
@@ -44,9 +44,10 @@ class OneRoom(MiniWorldEnv, utils.EzPickle):
 
     """
 
-    def __init__(self, size=10, max_episode_steps=180, **kwargs):
+    def __init__(self, size=10, max_episode_steps=180, hidden_box=False, **kwargs):
         assert size >= 2
         self.size = size
+        self.hidden_box = hidden_box
 
         MiniWorldEnv.__init__(self, max_episode_steps=max_episode_steps, **kwargs)
         utils.EzPickle.__init__(
@@ -59,7 +60,11 @@ class OneRoom(MiniWorldEnv, utils.EzPickle):
     def _gen_world(self):
         self.add_rect_room(min_x=0, max_x=self.size, min_z=0, max_z=self.size)
 
-        self.box = self.place_entity(Box(color="red"))
+        if self.hidden_box:
+            self.box = self.place_entity(HiddenBox(color="red"))
+        else:
+            self.box = self.place_entity(Box(color="red"))
+
         self.place_agent()
 
     def step(self, action):
