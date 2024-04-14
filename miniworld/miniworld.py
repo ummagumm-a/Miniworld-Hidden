@@ -1014,13 +1014,6 @@ class MiniWorldEnv(gym.Env):
         Default sparse reward computation
         """
 
-        print(
-            1.0 - 0.2 * (self.step_count / self.max_episode_steps),
-            self.step_count,
-            self.max_episode_steps,
-            self.step_count / self.max_episode_steps,
-        )
-
         return 1.0 - 0.2 * (self.step_count / self.max_episode_steps)
 
     def _render_static(self):
