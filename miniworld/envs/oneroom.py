@@ -85,13 +85,6 @@ class OneRoom(MiniWorldEnv, utils.EzPickle):
     def step(self, action):
         obs, reward, termination, truncation, info = super().step(action)
 
-        print(
-            reward,
-            1.0 - 0.2 * (self.step_count / self.max_episode_steps),
-            self.step_count,
-            self.max_episode_steps,
-            self.step_count / self.max_episode_steps,
-        )
         if self.near(self.box):
             reward += self._reward()
             termination = True
